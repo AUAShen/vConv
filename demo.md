@@ -1,0 +1,29 @@
+# vConv application demo
+
+Here we provide a demo of vConv's application in motif discovery from chipseq pick data. The input file is in fasta format. The demo will train the model and output model's parameters and the predicted motifs.
+Folder structure:
+**../demofasta/**  input fasta files, will train the model and predict motifs for each fasta file under this folder.
+**../result/vConvB/** output folder, each input fasta file will generate a subfolder under this directory, under which predicted motifs will be saved in **recover_PWM** folder and model's parameters will be saved in **ModleParaMeter**
+
+## Prerequisites
+
+### Software
+
+- Python 2 and its packages:
+  - numpy
+  - h5py
+  - pandas
+  - seaborn
+  - scipy
+  - keras (version 2.2.4)
+  - tensorflow (version 1.3.0)
+  - sklearn
+
+Alternatively, if you want to guarantee working versions of each dependency, you can install via a fully pre-specified environment.
+```{bash}
+conda env create -f environment_vConv.yml
+```
+
+# Quick start
+
+
