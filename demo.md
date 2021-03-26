@@ -31,6 +31,4 @@ Alternatively, if you want to guarantee working versions of each dependency, you
 conda env create -f environment_vConv.yml
 ```
 
-# Quick start
-
-
+# Q
