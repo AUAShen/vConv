@@ -31,4 +31,33 @@ Alternatively, if you want to guarantee working versions of each dependency, you
 conda env create -f environment_vConv.yml
 ```
 
-# Q
+# Overview of the pipeline
+
+Under the vConvbaseddiscovery/code/ folder, when running the command "python VConvMotifdiscovery.py", a demo script of vConv's application in motif discovery will be executed. This demo shows one of the real-world applications of vConv layer. Detailed workflow is explained below. It is worth to note that vConv is a key component of the model in this demo. Although the demo model only has one vConv layer, the vConv layer has the capability to be adapted into more sophisticated model structures. In an other word, vConv is a generalised convolution layer, which can be applied to a variety of model structures. In our manuscript [reference to add], we presented examples of multi-layers vConv based neural network.    
+
+
+## Generating training dataset from fasta file
+
+The input files are in fasta format. Each sequence is collected from a chipseq peak [reference to the data source]. The first step is to generate "negative" samples by shuffling the chipseq reads, while keeping the dimer frequency [double check if this is true]. Then the reads are one-hot represented in to a 4*L matrix, where L is the length of a read. Finally, both "positive" and "negative" samples are mixed together and subdivided into "training set" and "test set".  
+
+## Build vConv based neural network
+
+A vConv based model is builded in a similar way as illustrated in **README.md**. vConv is a novel convolutional layer, which can replace the classic conv layer. Shannon loss should be also added into the final loss function to fully use vConv layer's function. 
+
+## Train the model
+
+The model is trained in the same way as normal CNN model. [detailed training strategy refer to the supplementary material]
+
+## Motif visualization
+
+After the training process, motifs (PWM format) are recovered from kernels. The values of the kernel are normalized according to [refer to Ding Yang's motif to PWM matrix]
+
+## General applications
+
+
+
+
+
+
+
+#
