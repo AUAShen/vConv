@@ -52,9 +52,9 @@ The model is trained in the same way as normal CNN model. [detailed training str
 
 After the training process, motifs (PWM format) are recovered from kernels. The values of the kernel are normalized according to [refer to Ding Yang's motif to PWM matrix]
 
-## General applications
+# General applications
 
-
+The demo code here can be applied to a variety of motif discovery problems. For example, given any set of sequences of interest, identify the common motifs. These motifs are shared, conserved region among the input reads.  
 
 
 
