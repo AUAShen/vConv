@@ -128,3 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 .DS_Store
+vConvbaseddiscovery/code/environment_vConv.yml
+*.yml
+*.yml

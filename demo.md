@@ -50,7 +50,7 @@ The model is trained in the same way as normal CNN model. [detailed training str
 
 ## Motif visualization
 
-After the training process, motifs (PWM format) are recovered from kernels. The values of the kernel are normalized according to [refer to Ding Yang's motif to PWM matrix]
+After the training process, motifs (PWM format) are recovered from kernels. In brief, high-scored subsequences are selected for each motif to generate a PWM, by normalising each position's nucleotide composition to 1.   
 
 # General applications
 
