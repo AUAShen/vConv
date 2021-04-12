@@ -1,0 +1,12 @@
+name: vConv
+channels:
+  - defaults
+dependencies:
+  - numpy
+  - h5py
+  - pandas
+  - seaborn
+  - scipy
+  - keras==2.2.4
+  - tensorflow==1.3.0
+  - scikit-learn
