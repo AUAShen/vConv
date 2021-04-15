@@ -68,11 +68,23 @@ def ShanoyLoss(KernelWeights, MaskWeight, mu)
 ```
 ## Train the model
 
-The model is trained in the same way as normal CNN model. [detailed training strategy refer to the supplementary material]
+The model is trained in a similar way as normal CNN model. Detailed training strategy refer to the [supplementary material](add link!)
 
-## Motif visualization
+```{python}
+def train_vCNN(input_shape,modelsave_output_prefix,data_set, number_of_kernel, max_ker_len,init_ker_len_dict,random_seed, batch_size, epoch_scheme)
+```
 
-After the training process, motifs (PWM format) are recovered from kernels. In brief, high-scored subsequences are selected for each motif to generate a PWM, by normalising each position's nucleotide composition to 1.   
+## Motif visualisation
+
+After the training process, motifs (in PWM format) are recovered from kernels. In brief, highest-scored subsequences (from positive sequences) are selected for each kernel to generate a PWM, by normalising each position's nucleotide composition to 1.
+
+```{python}
+############Select Kernel #################### section in VConvMDcore.py
+# get highest subsequences for each kernel from positive sequences
+KernelSeqs, KSconvValue, seqinfo = KernelSeqDive(kernel, GeneRateOneHotMatrixTest.seq_pos_matrix_out,)
+# normalize to get PWM
+PwmWork = NormPwm(KernelSeqs, True)
+```
 
 # General applications
 
