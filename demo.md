@@ -1,6 +1,6 @@
 # A motif discovery demo of vConv-based model
 
-Here we provide a demo of vConv's application in motif discovery using chipseq peak data as input. The input file is in fasta format, each reads is a peak sequence identified from chipseq experiment. The demo will train the model and output model's parameters and the extract motifs.
+vConv is a novel convolutional layer, which can replace the classic conv layer. Here we provide a demo of vConv's application in motif discovery using chipseq peak data as input. The input file is in fasta format, each reads is a peak sequence identified from chipseq experiment. The demo will train the model and output model's parameters and the extract motifs.
 
 
 # Folder structure:
@@ -48,16 +48,24 @@ The input files are in fasta format. Each sequence is collected from a chipseq p
 ```{python}
 def k_mer_shuffle(self,seq_shape, seq_series, k=2) # in class: GeneRateOneHotMatrix
 ```
-Then the reads are one-hot represented in to a 4*L matrix, where L is the length of a read. Finally, both "positive" and "negative" samples are mixed together and subdivided into "training set" and "test set".  
+Then the reads are one-hot represented in to a 4*L matrix, where L is the length of a read. Finally, both "positive" and "negative" samples are mixed together and divided into "training set" and "test set".  
 ```{python}
 # in class: GeneRateOneHotMatrix
 def seq_to_matrix(self,seq, seq_matrix, seq_order)
 def GeneRateTrain(self, allData, ValNum=10, RandomSeeds=233)
 ```
-## Build vConv based neural network
+## Build vConv-based neural network
 
-A vConv based model is builded in a similar way as illustrated in [README.md](https://github.com/AUAShen/vConv/blob/main/README.md). vConv is a novel convolutional layer, which can replace the classic conv layer. Shannon loss should be also added into the final loss function to fully use vConv layer's function. 
-
+A vConv-based model is builded in a similar way as illustrated in [README.md](https://github.com/AUAShen/vConv/blob/main/README.md). Shannon loss is highly suggested to add into the final loss function, in order to fully use vConv layer's function. 
+```{python}
+# in build_models.py
+def build_vCNN(model_template, number_of_kernel, max_kernel_length, k_pool=1,input_shape=(1000,4))
+# add Shanon loss
+lossFunction = ShanoyLoss(KernelWeights, MaskWeight, mu=mu)
+model.compile(loss=lossFunction, optimizer=sgd, metrics=['accuracy'])
+# Shanon loss is defined in vConv_core.py
+def ShanoyLoss(KernelWeights, MaskWeight, mu)
+```
 ## Train the model
 
 The model is trained in the same way as normal CNN model. [detailed training strategy refer to the supplementary material]
