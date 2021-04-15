@@ -1,6 +1,6 @@
 # A motif discovery demo of vConv-based model
 
-vConv is a novel convolutional layer, which can replace the classic conv layer. Here we provide a demo of vConv's application in motif discovery using chipseq peak data as input. The input file is in fasta format, each reads is a peak sequence identified from chipseq experiment. The demo will train the model and output model's parameters and the extract motifs.
+vConv is a novel convolutional layer, which can replace the classic conv layer. Here we provide a demo of vConv's application in motif discovery using chipseq peak data as input. The input file is in fasta format, each reads is a peak sequence identified from chipseq experiment. The demo will train the model and output model's parameters and the extracted motifs.
 
 
 # Folder structure:
@@ -56,7 +56,7 @@ def GeneRateTrain(self, allData, ValNum=10, RandomSeeds=233)
 ```
 ## Build vConv-based neural network
 
-A vConv-based model is builded in a similar way as illustrated in [README.md](https://github.com/AUAShen/vConv/blob/main/README.md). Shannon loss is highly suggested to add into the final loss function, in order to fully use vConv layer's function. 
+A vConv-based model is builded in a similar way as illustrated in [README.md](https://github.com/AUAShen/vConv/blob/main/README.md). Shanon loss is highly suggested to add into the final loss function, in order to fully use vConv layer's function. 
 ```{python}
 # in build_models.py
 def build_vCNN(model_template, number_of_kernel, max_kernel_length, k_pool=1,input_shape=(1000,4))
@@ -88,7 +88,7 @@ PwmWork = NormPwm(KernelSeqs, True)
 
 # General applications
 
-The demo code here can be applied to a variety of motif discovery problems. At least two additional applications are possible: (1) When "biology-meaningful" negative data is available, one can skip the dimer shuffling and use the "biology-meaningful" negative data instead. It is worth noticing that in this situation, the motif extraction process may be different. Because negative data may also contain motifs, the highest-scored subsequences from negative sequences should be considered. (2) Generalization sequential motif identification. For example, given any set of sequences of interest, identify the common motifs. These motifs are shared, conserved sequence patterns among the input reads. In this scenario, the one-hot encoding of the sequence will no longer be **4*L**, but **N*L**. **N** is the alphabet size. In RNA, **N** is 4 while in protein **N** is 20.
+The demo code here can be applied to a variety of motif discovery problems. At least two additional applications are possible: (1) When "biology-meaningful" negative data is available, one can skip the dimer shuffling and use the "biology-meaningful" negative data instead. It is worth noticing that in this situation, the motif extraction process may be different. Because negative data may also contain motifs, the highest-scored subsequences from negative sequences should be considered. (2) Generalized sequential motif identification. For example, given any set of sequences of interest, identify the common motifs. These motifs are shared, conserved sequence patterns among the input reads. In this scenario, the one-hot encoding of the sequence will no longer be **4*L**, but **N*L**, where **N** is the alphabet size. In RNA, **N** is 4 while in protein **N** is 20.
 
 Although the demo model only has one vConv layer, the vConv layer can be adapted into more sophisticated model structures. In other word, vConv is a generalized convolution layer, which can be applied to a variety of model structures. In our manuscript [reference to add], we presented examples of multi-layers vConv based neural network.  
 
