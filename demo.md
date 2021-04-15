@@ -26,7 +26,7 @@ vConv is a novel convolutional layer, which can replace the classic conv layer. 
   - sklearn
   - ushuffle
 
-Alternatively, if you want to guarantee working versions of each dependency, you can install via a fully pre-specified environment.
+Alternatively, if you want to guarantee working versions of each dependency, you can install them via a fully pre-specified environment.
 ```{bash}
 conda env create -f environment_vConv.yml
 ```
@@ -37,14 +37,14 @@ Run the following command under the **./vConvbaseddiscovery/code/** folder, a de
 ```{bash}
  python VConvMotifdiscovery.py
 ```
-This demo shows one of the real-world applications of vConv layer: a single-layered Convolutional Neural network for motif discovery from chipseq data. Detailed workflow is explained below. 
+This demo shows one of the real-world applications of the vConv layer: a single-layered Convolutional Neural network for motif discovery from chipseq data. Detailed workflow is explained below. 
 
 
 ## Generating training and testing dataset from fasta file
 ```{python}
 class GeneRateOneHotMatrix() # in seq_to_matrix.py
 ```
-The input files are in fasta format. Each sequence is collected from a chipseq peak [reference to the data source]. The first step is to generate "negative" samples by shuffling the chipseq reads, while keeping the dimer frequency. 
+The input files are in fasta format. Each sequence is collected from a chipseq peak [reference to the data source]. The first step is to generate "negative" samples by shuffling the chipseq reads while keeping the dimer frequency. 
 ```{python}
 def k_mer_shuffle(self,seq_shape, seq_series, k=2) # in class: GeneRateOneHotMatrix
 ```
@@ -68,7 +68,7 @@ def ShanoyLoss(KernelWeights, MaskWeight, mu)
 ```
 ## Train the model
 
-The model is trained in a similar way as normal CNN model. Detailed training strategy refer to the [supplementary material](add link!)
+The model is trained similarly to the normal CNN model. Detailed training strategy refers to the [supplementary material](add the link!)
 
 ```{python}
 def train_vCNN(input_shape,modelsave_output_prefix,data_set, number_of_kernel, max_ker_len,init_ker_len_dict,random_seed, batch_size, epoch_scheme)
@@ -76,7 +76,7 @@ def train_vCNN(input_shape,modelsave_output_prefix,data_set, number_of_kernel, m
 
 ## Motif visualisation
 
-After the training process, motifs (in PWM format) are recovered from kernels. In brief, highest-scored subsequences (from positive sequences) are selected for each kernel to generate a PWM, by normalising each position's nucleotide composition to 1.
+After the training process, motifs (in PWM format) are recovered from kernels. In brief, the highest-scored subsequences (from positive sequences) are selected for each kernel to generate a PWM, by normalizing each position's nucleotide composition to 1.
 
 ```{python}
 ############Select Kernel #################### section in VConvMDcore.py
@@ -88,9 +88,9 @@ PwmWork = NormPwm(KernelSeqs, True)
 
 # General applications
 
-The demo code here can be applied to a variety of motif discovery problems. At least two additional applications are possible: (1) When "biology-meaningful" negative data is available, one can skip the dimer shuffling and use the "biology-meaningful" negative data instead. It is worth to notice that in this situation, motif extraction process maybe different. Because negative data may also contain motifs, highest-scored subsequences from negative sequences should be considered. (2) Generalization sequential motif identification. For example, given any set of sequences of interest, identify the common motifs. These motifs are shared, conserved sequence patterns among the input reads. In this scenario, the one-hot encoding of sequence will no longer be **4*L**, but **N*L**. **N** is the alphabet size. In RNA, **N** is 4 while in protein **N** is 20.
+The demo code here can be applied to a variety of motif discovery problems. At least two additional applications are possible: (1) When "biology-meaningful" negative data is available, one can skip the dimer shuffling and use the "biology-meaningful" negative data instead. It is worth noticing that in this situation, the motif extraction process may be different. Because negative data may also contain motifs, the highest-scored subsequences from negative sequences should be considered. (2) Generalization sequential motif identification. For example, given any set of sequences of interest, identify the common motifs. These motifs are shared, conserved sequence patterns among the input reads. In this scenario, the one-hot encoding of the sequence will no longer be **4*L**, but **N*L**. **N** is the alphabet size. In RNA, **N** is 4 while in protein **N** is 20.
 
-Although the demo model only has one vConv layer, the vConv layer has the capability to be adapted into more sophisticated model structures. In an other word, vConv is a generalised convolution layer, which can be applied to a variety of model structures. In our manuscript [reference to add], we presented examples of multi-layers vConv based neural network.   
+Although the demo model only has one vConv layer, the vConv layer can be adapted into more sophisticated model structures. In other word, vConv is a generalized convolution layer, which can be applied to a variety of model structures. In our manuscript [reference to add], we presented examples of multi-layers vConv based neural network.  
 
 
 
