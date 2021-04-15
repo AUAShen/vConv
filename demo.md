@@ -56,7 +56,7 @@ def GeneRateTrain(self, allData, ValNum=10, RandomSeeds=233)
 ```
 ## Build vConv based neural network
 
-A vConv based model is builded in a similar way as illustrated in **README.md**. vConv is a novel convolutional layer, which can replace the classic conv layer. Shannon loss should be also added into the final loss function to fully use vConv layer's function. 
+A vConv based model is builded in a similar way as illustrated in [README.md](https://github.com/AUAShen/vConv/blob/main/README.md). vConv is a novel convolutional layer, which can replace the classic conv layer. Shannon loss should be also added into the final loss function to fully use vConv layer's function. 
 
 ## Train the model
 
