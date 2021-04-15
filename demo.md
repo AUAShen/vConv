@@ -8,7 +8,7 @@ Here we provide a demo of vConv's application in motif discovery using chipseq p
 
 **../demofasta/**  input folder, saves fasta files. 
 
-**../result/vConvB/** output folder. For each input fasta file, the script will generate a subfolder under this directory, under which predicted motifs will be saved in **recover_PWM** folder and model's parameters will be saved in **ModelParameter**. For example, if the fasta file is "XXX.fasta". The script will save PWMs to **../result/vConvB/XXX/recover_PWM** and save the model parameters to **../result/vConvB/XXX/ModelParameter*
+**../result/vConvB/** output folder. For each input fasta file, the script will generate a subfolder under this directory, under which predicted motifs will be saved in **recover_PWM** folder and model's parameters will be saved in **ModelParameter**. For example, if the fasta file is "XXX.fasta". The script will save PWMs to **../result/vConvB/XXX/recover_PWM** and save the model parameters to **../result/vConvB/XXX/ModelParameter**
 
 
 ## Prerequisites
@@ -33,17 +33,27 @@ conda env create -f environment_vConv.yml
 
 # Overview of the pipeline
 
-Under the vConvbaseddiscovery/code/ folder, when running following command, a demo script of vConv's application in motif discovery will be executed
+Run the following command under the **./vConvbaseddiscovery/code/** folder, a demo script of vConv's application in motif discovery will be executed
 ```{bash}
  python VConvMotifdiscovery.py
 ```
-This demo shows one of the real-world applications of vConv layer: a single-layered Convolutional Neural network for motif discovery from chipseq data. Detailed workflow is explained below. It is worth to note that vConv is a component of the model in this demo.  
+This demo shows one of the real-world applications of vConv layer: a single-layered Convolutional Neural network for motif discovery from chipseq data. Detailed workflow is explained below. 
 
 
-## Generating training dataset from fasta file
-
-The input files are in fasta format. Each sequence is collected from a chipseq peak [reference to the data source]. The first step is to generate "negative" samples by shuffling the chipseq reads, while keeping the dimer frequency [double check if this is true]. Then the reads are one-hot represented in to a 4*L matrix, where L is the length of a read. Finally, both "positive" and "negative" samples are mixed together and subdivided into "training set" and "test set".  
-
+## Generating training and testing dataset from fasta file
+```{python}
+class GeneRateOneHotMatrix() # in seq_to_matrix.py
+```
+The input files are in fasta format. Each sequence is collected from a chipseq peak [reference to the data source]. The first step is to generate "negative" samples by shuffling the chipseq reads, while keeping the dimer frequency. 
+```{python}
+def k_mer_shuffle(self,seq_shape, seq_series, k=2) # in class: GeneRateOneHotMatrix
+```
+Then the reads are one-hot represented in to a 4*L matrix, where L is the length of a read. Finally, both "positive" and "negative" samples are mixed together and subdivided into "training set" and "test set".  
+```{python}
+# in class: GeneRateOneHotMatrix
+def seq_to_matrix(self,seq, seq_matrix, seq_order)
+def GeneRateTrain(self, allData, ValNum=10, RandomSeeds=233)
+```
 ## Build vConv based neural network
 
 A vConv based model is builded in a similar way as illustrated in **README.md**. vConv is a novel convolutional layer, which can replace the classic conv layer. Shannon loss should be also added into the final loss function to fully use vConv layer's function. 
