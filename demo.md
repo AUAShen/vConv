@@ -88,7 +88,7 @@ PwmWork = NormPwm(KernelSeqs, True)
 
 # General applications
 
-The demo code here can be applied to a variety of motif discovery problems. For example, given any set of sequences of interest, identify the common motifs. These motifs are shared, conserved region among the input reads.  
+The demo code here can be applied to a variety of motif discovery problems. At least two additional applications are possible: (1) When "biology-meaningful" negative data is available, one can skip the dimer shuffling and use the "biology-meaningful" negative data instead. It is worth to notice that in this situation, motif extraction process maybe different. Because negative data may also contain motifs, highest-scored subsequences from negative sequences should be considered. (2) Generalization sequential motif identification. For example, given any set of sequences of interest, identify the common motifs. These motifs are shared, conserved sequence patterns among the input reads. In this scenario, the one-hot encoding of sequence will no longer be **4*L**, but **N*L**. **N** is the alphabet size. In RNA, **N** is 4 while in protein **N** is 20.
 
 Although the demo model only has one vConv layer, the vConv layer has the capability to be adapted into more sophisticated model structures. In an other word, vConv is a generalised convolution layer, which can be applied to a variety of model structures. In our manuscript [reference to add], we presented examples of multi-layers vConv based neural network.   
 
