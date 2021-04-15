@@ -131,3 +131,7 @@ dmypy.json
 vConvbaseddiscovery/code/environment_vConv.yml
 *.yml
 *.yml
+*.zip
+*.txt
+vConvbaseddiscovery/result/vConvB/wgEncodeAwgTfbsSydhHelas3Brf1UniPk/recover_PWM/0.txt
+*.txt

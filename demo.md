@@ -33,7 +33,11 @@ conda env create -f environment_vConv.yml
 
 # Overview of the pipeline
 
-Under the vConvbaseddiscovery/code/ folder, when running the command "python VConvMotifdiscovery.py", a demo script of vConv's application in motif discovery will be executed. This demo shows one of the real-world applications of vConv layer. Detailed workflow is explained below. It is worth to note that vConv is a key component of the model in this demo. Although the demo model only has one vConv layer, the vConv layer has the capability to be adapted into more sophisticated model structures. In an other word, vConv is a generalised convolution layer, which can be applied to a variety of model structures. In our manuscript [reference to add], we presented examples of multi-layers vConv based neural network.    
+Under the vConvbaseddiscovery/code/ folder, when running following command, a demo script of vConv's application in motif discovery will be executed
+```bash
+ python VConvMotifdiscovery.py
+```
+This demo shows one of the real-world applications of vConv layer. Detailed workflow is explained below. It is worth to note that vConv is a key component of the model in this demo. Although the demo model only has one vConv layer, the vConv layer has the capability to be adapted into more sophisticated model structures. In an other word, vConv is a generalised convolution layer, which can be applied to a variety of model structures. In our manuscript [reference to add], we presented examples of multi-layers vConv based neural network.    
 
 
 ## Generating training dataset from fasta file
