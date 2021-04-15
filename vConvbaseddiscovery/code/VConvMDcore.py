@@ -162,7 +162,7 @@ def runvConvC(filePath, OutputDir, HyperParaMeters, SaveData=False):
     dataNum = GeneRateOneHotMatrixTest.TrainY.shape[0]
 
     input_shape = GeneRateOneHotMatrixTest.TestX[0].shape
-    modelsave_output_prefix = OutputDir + "/ModleParaMeter/"
+    modelsave_output_prefix = OutputDir + "/ModelParameter/"
     kernel_init_dict = {str(HyperParaMeters["kernel_init_size"]): HyperParaMeters["number_of_kernel"]}
     
     auc, info, model = train_vCNN(input_shape=input_shape, modelsave_output_prefix=modelsave_output_prefix,

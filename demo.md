@@ -1,15 +1,14 @@
 # A motif discovery demo of vConv-based model
 
-Here we provide a demo of vConv's application in motif discovery using chipseq pick data as input. The input file is in fasta format, each reads is a pick sequence identified from chipseq experiment. The demo will train the model and output model's parameters and the predicted motifs.
+Here we provide a demo of vConv's application in motif discovery using chipseq peak data as input. The input file is in fasta format, each reads is a peak sequence identified from chipseq experiment. The demo will train the model and output model's parameters and the extract motifs.
 
 
 # Folder structure:
 
 
-**../demofasta/**  input folder, saves fasta files. The demo script will first build a vConv-based model. For each fasta file under this folder, it will generate input data and train the model on the dataset. Finally a set of motifs will be generated for each input fasta file. 
+**../demofasta/**  input folder, saves fasta files. 
 
-
-**../result/vConvB/** output folder. For each input fasta file, the script will generate a subfolder under this directory, under which predicted motifs will be saved in **recover_PWM** folder and model's parameters will be saved in **ModleParaMeter**
+**../result/vConvB/** output folder. For each input fasta file, the script will generate a subfolder under this directory, under which predicted motifs will be saved in **recover_PWM** folder and model's parameters will be saved in **ModelParameter**. For example, if the fasta file is "XXX.fasta". The script will save PWMs to **../result/vConvB/XXX/recover_PWM** and save the model parameters to **../result/vConvB/XXX/ModelParameter*
 
 
 ## Prerequisites
@@ -25,6 +24,7 @@ Here we provide a demo of vConv's application in motif discovery using chipseq p
   - keras (version 2.2.4)
   - tensorflow (version 1.3.0)
   - sklearn
+  - ushuffle
 
 Alternatively, if you want to guarantee working versions of each dependency, you can install via a fully pre-specified environment.
 ```{bash}
@@ -34,10 +34,10 @@ conda env create -f environment_vConv.yml
 # Overview of the pipeline
 
 Under the vConvbaseddiscovery/code/ folder, when running following command, a demo script of vConv's application in motif discovery will be executed
-```bash
+```{bash}
  python VConvMotifdiscovery.py
 ```
-This demo shows one of the real-world applications of vConv layer. Detailed workflow is explained below. It is worth to note that vConv is a key component of the model in this demo. Although the demo model only has one vConv layer, the vConv layer has the capability to be adapted into more sophisticated model structures. In an other word, vConv is a generalised convolution layer, which can be applied to a variety of model structures. In our manuscript [reference to add], we presented examples of multi-layers vConv based neural network.    
+This demo shows one of the real-world applications of vConv layer: a single-layered Convolutional Neural network for motif discovery from chipseq data. Detailed workflow is explained below. It is worth to note that vConv is a component of the model in this demo.  
 
 
 ## Generating training dataset from fasta file
@@ -59,6 +59,8 @@ After the training process, motifs (PWM format) are recovered from kernels. In b
 # General applications
 
 The demo code here can be applied to a variety of motif discovery problems. For example, given any set of sequences of interest, identify the common motifs. These motifs are shared, conserved region among the input reads.  
+
+Although the demo model only has one vConv layer, the vConv layer has the capability to be adapted into more sophisticated model structures. In an other word, vConv is a generalised convolution layer, which can be applied to a variety of model structures. In our manuscript [reference to add], we presented examples of multi-layers vConv based neural network.   
 
 
 
