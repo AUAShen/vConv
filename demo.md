@@ -75,13 +75,14 @@ auc, info, model = train_vCNN(input_shape=input_shape, modelsave_output_prefix=m
 ```
 1. Build a vConv-based model in a similar way as illustrated in [README.md](https://github.com/AUAShen/vConv/blob/main/README.md). This model consists of a one-dimensional vConv layer (vConv1D) with 64 kernels of unmasked length=50 and initial length of unmasked region=12, a Max-Pooling layer with pooling length=10, a Global Max-Pooling layer, and finally a Dense layer with a sigmoid activation that outputs a scalar;
 2. Train the vConv-based model with the following strategies:
-  - A Dropout mechanism (with XXX=0.1) is added between the Global Max-Pooling layer and the Dense layer
+  - A Dropout mechanism (with dropout_rate=0.1) is added between the Global Max-Pooling layer and the Dense layer
   - The loss is the sum of the BCE loss for the prediction + 0.0025 * the Shannon loss from the masked kernels
   - Adadelta is chosen as the optimizer with lr=1, rho=0.99, epsilon=1.0e-8, and decay=0.0
-- xxx
   - The batch size is 100
   - Before training, the training dataset is shuffled, and 10% of it is taken as the validation subset
   - A total number of 1,000 epoch is used with an EarlyStopping mechanism that stops training when the loss on validation dataset does not increase for 50 consecutive epochs
+  - Mask parameters starts to updates from the10th epoch.
+  
 3. Save the trained model at `./vConvbaseddiscovery/result/vConvB/{chipseq_fasta_name}/ModelParameter`
 
 ## Discover and visualize the motifs
