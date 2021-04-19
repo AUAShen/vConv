@@ -81,7 +81,7 @@ auc, info, model = train_vCNN(input_shape=input_shape, modelsave_output_prefix=m
   - The batch size is 100
   - Before training, the training dataset is shuffled, and 10% of it is taken as the validation subset
   - A total number of 1,000 epoch is used with an EarlyStopping mechanism that stops training when the loss on validation dataset does not increase for 50 consecutive epochs
-  - Mask parameters starts to updates from the10th epoch.
+  - Mask parameters start to updates from the 10th epoch.
   
 3. Save the trained model at `./vConvbaseddiscovery/result/vConvB/{chipseq_fasta_name}/ModelParameter`
 
