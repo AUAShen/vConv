@@ -82,7 +82,7 @@ auc, info, model = train_vCNN(input_shape=input_shape, modelsave_output_prefix=m
   - The batch size is 100
   - Before training, the training dataset is shuffled, and 10% of it is taken as the validation subset
   - A total number of 1,000 epoch is used with an EarlyStopping mechanism that stops training when the loss on validation dataset does not increase for 50 consecutive epochs
-3. Save the trained model at `../result/vConvB/\{chipseq_fasta_name\}/ModelParameter`
+3. Save the trained model at `./vConvbaseddiscovery/result/vConvB/\{chipseq_fasta_name\}/ModelParameter`
 
 ## Discover and visualize the motifs
 
@@ -120,7 +120,7 @@ np.savetxt(OutputDir + "/over.txt", np.zeros(1))
 ```
 1. Select only those kernels with absolute value of Dense layer weights large enough (here defined as being larger than the mean minus the standard deviation of absolute values of all Dense layer weights);
 2. Select the highest-scored subsequences from positive sequences for each kernel and generate as its motif a Position Weight Matrix (PWM) by normalizing each position's nucleotide composition to 1
-3. Save the PWMs at `../result/vConvB/\{chipseq_fasta_name\}/recover_PWM`
+3. Save the PWMs at `./vConvbaseddiscovery/result/vConvB/\{chipseq_fasta_name\}/recover_PWM`
 
 
 
