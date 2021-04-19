@@ -127,7 +127,7 @@ np.savetxt(OutputDir + "/over.txt", np.zeros(1))
 # Possible extensions
 
 1. **Using refined negative datasets**. When negative datasets that are "biologically meaningful" are available, one can skip the shuffling step and use them instead. It is worth noticing that in this situation, the highest-scored subsequences from negative sequences should also be considered for motif discovery, because these negative datasets might also contain motifs.
-2. **Identify motifs for sequences other than DNA/RNA.** The **N*L** one-hot encoding of the sequence, where **N** is the alphabet size, might no longer be 4; for example, in protein **N** could be 20.
+2. **Identify motifs for sequences other than DNA/RNA.** The **k*L** one-hot encoding of the sequence, where **k** is the alphabet size, might no longer be 4; for example, in protein **k** could be 20.
 3. **Build and train multi-layer vConv-based models**. Although the demo model only has one vConv layer, the vConv layer can be adapted into more sophisticated model structures. In our manuscript [reference to add], we presented how to build and train a multi-layer vConv-based version of the Basset model [].  
 
 
