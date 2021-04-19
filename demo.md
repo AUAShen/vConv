@@ -50,8 +50,8 @@ GeneRateOneHotMatrixTest.runSimple(filePath, OutputDirHdf5, SaveData=SaveData)
 ```
 1. Read in the fasta file;
 2. Encode the read sequences into an N\*L\*4 tensor (the tensor of positive samples), where N is the number of reads and L is the length of each read;
-3. Generate negative samples by shuffling the reads while preserving the distribution of dinucleotides and encode them into another N\*4\*L tensor (the tensor of negative samples); and
-4. Mix the two tensors and divided them into the training and test set.
+3. Generate negative samples by shuffling the reads while preserving the distribution of dinucleotides and encode them into another N\*4\*L tensor (the tensor of negative samples); 
+4. Mix the two tensors and divided them into the training and test sets.
 
 ## Build and train vConv-based neural network
 
@@ -82,7 +82,7 @@ auc, info, model = train_vCNN(input_shape=input_shape, modelsave_output_prefix=m
   - The batch size is 100
   - Before training, the training dataset is shuffled, and 10% of it is taken as the validation subset
   - A total number of 1,000 epoch is used with an EarlyStopping mechanism that stops training when the loss on validation dataset does not increase for 50 consecutive epochs
-3. Save the trained model at `./XXX`
+3. Save the trained model at `../result/vConvB/\{chipseq_fasta_name\}/ModelParameter`
 
 ## Discover and visualize the motifs
 
@@ -120,7 +120,7 @@ np.savetxt(OutputDir + "/over.txt", np.zeros(1))
 ```
 1. Select only those kernels with absolute value of Dense layer weights large enough (here defined as being larger than the mean minus the standard deviation of absolute values of all Dense layer weights);
 2. Select the highest-scored subsequences from positive sequences for each kernel and generate as its motif a Position Weight Matrix (PWM) by normalizing each position's nucleotide composition to 1
-3. Save the PWMs at `./XXX`
+3. Save the PWMs at `../result/vConvB/\{chipseq_fasta_name\}/recover_PWM`
 
 
 
