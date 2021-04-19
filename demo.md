@@ -1,14 +1,6 @@
 # A motif discovery demo of vConv-based model
 
-vConv is a novel convolutional layer, which can replace the classic conv layer. Here we provide a demo of vConv's application in motif discovery using chipseq peak data as input. The input file is in fasta format, each reads is a peak sequence identified from chipseq experiment. The demo will train the model and output model's parameters and the extracted motifs.
-
-
-# Folder structure:
-
-
-**../demofasta/**  input folder, saves fasta files. 
-
-**../result/vConvB/** output folder. For each input fasta file, the script will generate a subfolder under this directory, under which predicted motifs will be saved in **recover_PWM** folder and model's parameters will be saved in **ModelParameter**. For example, if the fasta file is "XXX.fasta". The script will save PWMs to **../result/vConvB/XXX/recover_PWM** and save the model parameters to **../result/vConvB/XXX/ModelParameter**
+vConv is a novel convolutional layer, which can replace the classic convolutional layer. Here we provide a demo of vConv's application to motif discovery from ChIP-Seq reads.
 
 
 ## Prerequisites
@@ -26,74 +18,119 @@ vConv is a novel convolutional layer, which can replace the classic conv layer. 
   - sklearn
   - ushuffle
 
-Alternatively, if you want to guarantee working versions of each dependency, you can install them via a fully pre-specified environment.
+You can install them with the following `conda` command:
 ```{bash}
 conda env create -f environment_vConv.yml
+conda activate vConv
 ```
 
-# Overview of the pipeline
+# How to run the demo
 
-Run the following command under the **./vConvbaseddiscovery/code/** folder, a demo script of vConv's application in motif discovery will be executed
+Run the demo with the following commands:
+
 ```{bash}
- python VConvMotifdiscovery.py
+cd ./vConvbaseddiscovery/code/
+python VConvMotifdiscovery.py
 ```
-This demo shows one of the real-world applications of the vConv layer: a single-layered Convolutional Neural network for motif discovery from chipseq data. Detailed workflow is explained below. 
 
+This script will iterate over all ChIP-Seq read files (in fasta format) under `./vConvbaseddiscovery/demofasta/`. For each of these file, the script will train (and discover motifs from) a separate vConv-based model for each of them with the core function `runvConvC` in `./vConvbaseddiscovery/code/VConvMDcore.py`. 
 
-## Generating training and testing dataset from fasta file
+We have prepared an example input file from ENCODE (`./vConvbaseddiscovery/demofasta/wgEncodeAwgTfbsSydhHelas3Brf1UniPk.fa`, HeLa-S3 TFBS Uniform Peaks of BRF1 from ENCODE/Harvard/Analysis ; downloaded from https://www.genome.ucsc.edu/cgi-bin/hgTrackUi?hgsid=1087730107_iKxBSlJS5lkfutvSOo3tzUwJAaD7&g=wgEncodeAwgTfbsSydhHelas3Brf1UniPk), but the user can test their own ChIP-Seq read files as well.
+
+# Explanation of each step in `runvConvC`
+
+## Generate training and test dataset from fasta file
+
+The codes at Line 155-158 in `runvConvC`:
 ```{python}
-class GeneRateOneHotMatrix() # in seq_to_matrix.py
+########################generate dataset#########################
+GeneRateOneHotMatrixTest = GeneRateOneHotMatrix()
+OutputDirHdf5 = OutputDir + "/Hdf5/"
+GeneRateOneHotMatrixTest.runSimple(filePath, OutputDirHdf5, SaveData=SaveData)
 ```
-The input files are in fasta format. Each sequence is collected from a chipseq peak [reference to the data source]. The first step is to generate "negative" samples by shuffling the chipseq reads while keeping the dimer frequency. 
+1. Read in the fasta file;
+2. Encode the read sequences into an N*L*4 tensor (the tensor of positive samples), where N is the number of reads and L is the length of each read;
+3. Generate negative samples by shuffling the reads while preserving the distribution of dinucleotides and encode them into another N*4*L tensor (the tensor of negative samples); and
+4. Mix the two tensors and divided them into the training and test set.
+
+## Build and train vConv-based neural network
+
+The codes at Line 159-173 in `runvConvC`:
 ```{python}
-def k_mer_shuffle(self,seq_shape, seq_series, k=2) # in class: GeneRateOneHotMatrix
+########################train model#########################
+data_set = [[GeneRateOneHotMatrixTest.TrainX, GeneRateOneHotMatrixTest.TrainY],
+            [GeneRateOneHotMatrixTest.TestX, GeneRateOneHotMatrixTest.TestY]]
+dataNum = GeneRateOneHotMatrixTest.TrainY.shape[0]
+
+input_shape = GeneRateOneHotMatrixTest.TestX[0].shape
+modelsave_output_prefix = OutputDir + "/ModelParameter/"
+kernel_init_dict = {str(HyperParaMeters["kernel_init_size"]): HyperParaMeters["number_of_kernel"]}
+
+auc, info, model = train_vCNN(input_shape=input_shape, modelsave_output_prefix=modelsave_output_prefix,
+                              data_set=data_set, number_of_kernel=HyperParaMeters["number_of_kernel"],
+                              init_ker_len_dict=kernel_init_dict, max_ker_len=HyperParaMeters["max_ker_len"],
+                              random_seed=HyperParaMeters["random_seed"],
+                              batch_size=HyperParaMeters["batch_size"],
+                              epoch_scheme=HyperParaMeters["epoch_scheme"])
 ```
-Then the reads are one-hot represented in to a 4*L matrix, where L is the length of a read. Finally, both "positive" and "negative" samples are mixed together and divided into "training set" and "test set".  
+1. Build a vConv-based model in a similar way as illustrated in [README.md](https://github.com/AUAShen/vConv/blob/main/README.md). This model consists of a one-dimensional vConv layer (vConv1D) with 64 kernels of unmasked length=50 and initial length of unmasked region=12, a Max-Pooling layer with pooling length=10, a Global Max-Pooling layer, and finally a Dense layer with a sigmoid activation that outputs a scalar;
+2. Train the vConv-based model with the following strategies:
+  - A Dropout mechanism (with XXX=0.1) is added between the Global Max-Pooling layer and the Dense layer
+  - The loss is the sum of the BCE loss for the prediction + 0.0025 * the Shannon loss from the masked kernels
+  - Adadelta is chosen as the optimizer with lr=1, rho=0.99, epsilon=1.0e-8, and decay=0.0
+- xxx
+  - The batch size is 100
+  - Before training, the training dataset is shuffled, and 10% of it is taken as the validation subset
+  - A total number of 1,000 epoch is used with an EarlyStopping mechanism that stops training when the loss on validation dataset does not increase for 50 consecutive epochs
+3. Save the trained model at `./XXX`
+
+## Discover and visualize the motifs
+
+The codes at Line 175-203 in `runvConvC`:
 ```{python}
-# in class: GeneRateOneHotMatrix
-def seq_to_matrix(self,seq, seq_matrix, seq_order)
-def GeneRateTrain(self, allData, ValNum=10, RandomSeeds=233)
+############Select Kernel ####################
+
+DenseWeights = K.get_value(model.layers[4].kernel)
+meanValue = np.mean(np.abs(DenseWeights))
+std = np.std(np.abs(DenseWeights))
+workWeightsIndex = np.where(np.abs(DenseWeights) > meanValue-std)[0]
+kernels = recover_ker(model, "vCNN", workWeightsIndex)
+print("get kernels")
+
+PwmWorklist = []
+for ker_id in range(len(kernels)):
+    kernel = kernels[ker_id]
+
+    KernelSeqs, KSconvValue, seqinfo = KernelSeqDive(kernel, GeneRateOneHotMatrixTest.seq_pos_matrix_out,)
+    KernelSeqs = np.asarray(KernelSeqs)
+    PwmWork = NormPwm(KernelSeqs, True)
+    PwmWorklist.append(PwmWork)
+
+
+
+pwm_save_dir = OutputDir + "/recover_PWM/"
+mkdir(pwm_save_dir)
+for i in range(len(PwmWorklist)):
+    mkdir(pwm_save_dir + "/")
+    np.savetxt(pwm_save_dir + "/" + str(i) + ".txt", PwmWorklist[i])
+
+del model, KernelSeqs, KSconvValue, seqinfo
+gc.collect()
+np.savetxt(OutputDir + "/over.txt", np.zeros(1))
 ```
-## Build vConv-based neural network
+1. Select only those kernels with absolute value of Dense layer weights large enough (here defined as being larger than the mean minus the standard deviation of absolute values of all Dense layer weights);
+2. Select the highest-scored subsequences from positive sequences for each kernel and generate as its motif a Position Weight Matrix (PWM) by normalizing each position's nucleotide composition to 1
+3. Save the PWMs at `./XXX`
 
-A vConv-based model is builded in a similar way as illustrated in [README.md](https://github.com/AUAShen/vConv/blob/main/README.md). Shanon loss is highly suggested to add into the final loss function, in order to fully use vConv layer's function. 
-```{python}
-# in build_models.py
-def build_vCNN(model_template, number_of_kernel, max_kernel_length, k_pool=1,input_shape=(1000,4))
-# add Shanon loss
-lossFunction = ShanoyLoss(KernelWeights, MaskWeight, mu=mu)
-model.compile(loss=lossFunction, optimizer=sgd, metrics=['accuracy'])
-# Shanon loss is defined in vConv_core.py
-def ShanoyLoss(KernelWeights, MaskWeight, mu)
-```
-## Train the model
 
-The model is trained similarly to the normal CNN model. Detailed training strategy refers to the [supplementary material](add the link!)
 
-```{python}
-def train_vCNN(input_shape,modelsave_output_prefix,data_set, number_of_kernel, max_ker_len,init_ker_len_dict,random_seed, batch_size, epoch_scheme)
-```
+# Possible extensions
 
-## Motif visualisation
-
-After the training process, motifs (in PWM format) are recovered from kernels. In brief, the highest-scored subsequences (from positive sequences) are selected for each kernel to generate a PWM, by normalizing each position's nucleotide composition to 1.
-
-```{python}
-############Select Kernel #################### section in VConvMDcore.py
-# get highest subsequences for each kernel from positive sequences
-KernelSeqs, KSconvValue, seqinfo = KernelSeqDive(kernel, GeneRateOneHotMatrixTest.seq_pos_matrix_out,)
-# normalize to get PWM
-PwmWork = NormPwm(KernelSeqs, True)
-```
-
-# General applications
-
-The demo code here can be applied to a variety of motif discovery problems. At least two additional applications are possible: (1) When "biology-meaningful" negative data is available, one can skip the dimer shuffling and use the "biology-meaningful" negative data instead. It is worth noticing that in this situation, the motif extraction process may be different. Because negative data may also contain motifs, the highest-scored subsequences from negative sequences should be considered. (2) Generalized sequential motif identification. For example, given any set of sequences of interest, identify the common motifs. These motifs are shared, conserved sequence patterns among the input reads. In this scenario, the one-hot encoding of the sequence will no longer be **4*L**, but **N*L**, where **N** is the alphabet size. In RNA, **N** is 4 while in protein **N** is 20.
-
-Although the demo model only has one vConv layer, the vConv layer can be adapted into more sophisticated model structures. In other word, vConv is a generalized convolution layer, which can be applied to a variety of model structures. In our manuscript [reference to add], we presented examples of multi-layers vConv based neural network.  
+1. **Using refined negative datasets**. When negative datasets that are "biologically meaningful" are available, one can skip the shuffling step and use them instead. It is worth noticing that in this situation, the highest-scored subsequences from negative sequences should also be considered for motif discovery, because these negative datasets might also contain motifs.
+2. **Identify motifs for sequences other than DNA/RNA.** The **N*L** one-hot encoding of the sequence, where **N** is the alphabet size, might no longer be 4; for example, in protein **N** could be 20.
+3. **Build and train multi-layer vConv-based models**. Although the demo model only has one vConv layer, the vConv layer can be adapted into more sophisticated model structures. In our manuscript [reference to add], we presented how to build and train a multi-layer vConv-based version of the Basset model [].  
 
 
 
 
 
-#
