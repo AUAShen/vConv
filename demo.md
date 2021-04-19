@@ -49,8 +49,8 @@ OutputDirHdf5 = OutputDir + "/Hdf5/"
 GeneRateOneHotMatrixTest.runSimple(filePath, OutputDirHdf5, SaveData=SaveData)
 ```
 1. Read in the fasta file;
-2. Encode the read sequences into an N*L*4 tensor (the tensor of positive samples), where N is the number of reads and L is the length of each read;
-3. Generate negative samples by shuffling the reads while preserving the distribution of dinucleotides and encode them into another N*4*L tensor (the tensor of negative samples); and
+2. Encode the read sequences into an N\*L\*4 tensor (the tensor of positive samples), where N is the number of reads and L is the length of each read;
+3. Generate negative samples by shuffling the reads while preserving the distribution of dinucleotides and encode them into another N\*4\*L tensor (the tensor of negative samples); and
 4. Mix the two tensors and divided them into the training and test set.
 
 ## Build and train vConv-based neural network
